@@ -1,70 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fenrir Finds - Smart Deals & AI Price Tracking</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import dotenv from "dotenv";
 
-    <header>
-        <h1>Fenrir Finds</h1>
-        <p>AI-powered deal hunting made easy</p>
-        <input type="text" id="search" placeholder="Search for deals...">
-    </header>
+dotenv.config();
 
-    <section id="featured">
-        <h2>🔥 Trending Deals</h2>
-        <div id="trending-deals">
-            <!-- Deals will be loaded here -->
-        </div>
-    </section>
+// 🔥 Firebase configuration from .env file
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  appId: process.env.FIREBASE_APP_ID,
+};
 
-    <section id="top-rated">
-        <h2>⭐ Top Rated Deals</h2>
-        <div id="top-deals">
-            <!-- Top-rated deals will appear here -->
-        </div>
-    </section>
+// 🚀 Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-    <section id="ai-recommendations">
-        <h2>🤖 AI-Powered Picks</h2>
-        <div id="ai-deals">
-            <!-- AI-generated deals will appear here -->
-        </div>
-    </section>
+// 👤 Google Sign-In Function
+const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log("✅ User Signed In:", result.user);
+  } catch (error) {
+    console.error("❌ Error Signing In:", error.message);
+  }
+};
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import Firebase SDK
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-        // Firebase configuration (Use your Firebase details)
-        const firebaseConfig = {
-            apiKey: "AIzaSyByUbWL0BLE-aI4MKS3c0XJuF1KNnf-gFI",
-            authDomain: "fenrir-finds.firebaseapp.com",
-            projectId: "fenrir-finds",
-            storageBucket: "fenrir-finds.appspot.com",
-            messagingSenderId: "549021358261",
-            appId: "1:549021358261:web:4c0a4434866d2a8bd306fc",
-            measurementId: "G-YNQSKV920M"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
-
-        // Make Firebase accessible globally (for debugging)
-        window.firebaseApp = app;
-        window.db = db;
-    </script>
-
-    <!-- Your custom script -->
-    <script type="module" src="script.js"></script>
-
-</body>
-</html>
+// 🏃 Call the function to test login
+signInWithGoogle();
