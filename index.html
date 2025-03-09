@@ -1,31 +1,55 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import dotenv from "dotenv";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fenrir Finds</title>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script defer src="index.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Fenrir Finds</h1>
+        <button id="login">Login with Google</button>
+        <button id="logout" style="display: none;">Logout</button>
+    </header>
 
-dotenv.config();
+    <main>
+        <h2>Top Deals for You</h2>
+        <div id="products-container">
+            <!-- Products will be displayed here -->
+        </div>
+    </main>
 
-// 🔥 Firebase configuration from .env file
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  appId: process.env.FIREBASE_APP_ID,
-};
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginBtn = document.getElementById("login");
+            const logoutBtn = document.getElementById("logout");
 
-// 🚀 Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+            // Firebase Authentication
+            loginBtn.addEventListener("click", () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider)
+                    .then(result => {
+                        console.log("User signed in:", result.user);
+                        loginBtn.style.display = "none";
+                        logoutBtn.style.display = "block";
+                    })
+                    .catch(error => console.error("Login failed:", error));
+            });
 
-// 👤 Google Sign-In Function
-const signInWithGoogle = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    console.log("✅ User Signed In:", result.user);
-  } catch (error) {
-    console.error("❌ Error Signing In:", error.message);
-  }
-};
-
-// 🏃 Call the function to test login
-signInWithGoogle();
+            logoutBtn.addEventListener("click", () => {
+                firebase.auth().signOut()
+                    .then(() => {
+                        console.log("User signed out");
+                        loginBtn.style.display = "block";
+                        logoutBtn.style.display = "none";
+                    })
+                    .catch(error => console.error("Logout failed:", error));
+            });
+        });
+    </script>
+</body>
+</html>
