@@ -34,20 +34,19 @@
         </div>
     </section>
 
-   <script type="module">
-  // Import the functions you need from the SDKs you need
+   
+ <!-- Firebase SDK -->
+<script type="module">
+  // Import Firebase SDK
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  // Firebase configuration (USE YOUR FIREBASE CONFIG DETAILS HERE)
   const firebaseConfig = {
     apiKey: "AIzaSyByUbWL0BLE-aI4MKS3c0XJuF1KNnf-gFI",
     authDomain: "fenrir-finds.firebaseapp.com",
     projectId: "fenrir-finds",
-    storageBucket: "fenrir-finds.firebasestorage.app",
+    storageBucket: "fenrir-finds.appspot.com",
     messagingSenderId: "549021358261",
     appId: "1:549021358261:web:4c0a4434866d2a8bd306fc",
     measurementId: "G-YNQSKV920M"
@@ -56,7 +55,12 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+
+  // Make Firebase accessible globally
+  window.firebaseApp = app;
 </script>
+
+<!-- Your custom script -->
 <script src="script.js"></script>
 </body>
 </html>
