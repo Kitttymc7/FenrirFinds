@@ -1,33 +1,59 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    background-color: #f8f9fa;
+// For this example you need the node-fetch npm packages: `npm i node-fetch`
+import fetch from 'node-fetch';
+
+fetch('https://api.scraperapi.com/?api_key=f8efbdac83d618b950603db407e672c2&url=https%3A%2F%2Fwww.amazon.com%2FBest-Sellers-Electronics%2Fzgbs%2Felectronics%3F%26linkCode%3Dll2%26tag%3Dfenrirfindsde-20%26linkId%3D8b4c1f895025f177b6633e584afc4037%26language%3Den_US%26ref_%3Das_li_ss_tl')
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.log(error)
+  });
+import axios from "axios";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+// 🔹 Your Firebase Config (Replace with your actual Firebase details)
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID",
+};
+
+// 🔹 Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔹 ScraperAPI request
+const API_KEY = "YOUR_SCRAPERAPI_KEY"; // Replace with your ScraperAPI key
+const amazonURL = "https://www.amazon.com/Best-Sellers-Electronics/zgbs/electronics";
+
+async function scrapeAmazon() {
+    try {
+        const response = await axios.get(`https://api.scraperapi.com?api_key=${API_KEY}&url=${encodeURIComponent(amazonURL)}`);
+        
+        // 🔹 Extract relevant product data
+        const products = response.data.products.map(product => ({
+            title: product.title,
+            price: product.price,
+            rating: product.rating,
+            link: product.url,
+            image: product.image
+        }));
+
+        // 🔹 Save each product to Firebase
+        for (const product of products) {
+            await addDoc(collection(db, "products"), product);
+        }
+
+        console.log("✅ Products saved successfully!");
+    } catch (error) {
+        console.error("❌ Error scraping Amazon:", error);
+    }
 }
 
-header {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    font-size: 24px;
-}
+// Run the scraper
+scrapeAmazon();
 
-h1, h2 {
-    color: #333;
-}
-
-input {
-    padding: 10px;
-    margin: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-section {
-    margin: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: white;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-}
