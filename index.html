@@ -3,53 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fenrir Finds</title>
-    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script defer src="index.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <title>Fenrir Finds - Login & Rewards</title>
+    <script defer src="script.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Fenrir Finds</h1>
-        <button id="login">Login with Google</button>
-        <button id="logout" style="display: none;">Logout</button>
-    </header>
+    <h2>Welcome to Fenrir Finds</h2>
+    
+    <h3>Sign Up</h3>
+    <input type="email" id="signup-email" placeholder="Enter email">
+    <input type="password" id="signup-password" placeholder="Enter password">
+    <button onclick="signUp()">Sign Up</button>
+    
+    <h3>Login</h3>
+    <input type="email" id="login-email" placeholder="Enter email">
+    <input type="password" id="login-password" placeholder="Enter password">
+    <button onclick="logIn()">Login</button>
 
-    <main>
-        <h2>Top Deals for You</h2>
-        <div id="products-container">
-            <!-- Products will be displayed here -->
-        </div>
-    </main>
+    <h3>User Info</h3>
+    <p id="user-info">Not logged in</p>
+    <button onclick="logOut()">Log Out</button>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const loginBtn = document.getElementById("login");
-            const logoutBtn = document.getElementById("logout");
-
-            // Firebase Authentication
-            loginBtn.addEventListener("click", () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithPopup(provider)
-                    .then(result => {
-                        console.log("User signed in:", result.user);
-                        loginBtn.style.display = "none";
-                        logoutBtn.style.display = "block";
-                    })
-                    .catch(error => console.error("Login failed:", error));
-            });
-
-            logoutBtn.addEventListener("click", () => {
-                firebase.auth().signOut()
-                    .then(() => {
-                        console.log("User signed out");
-                        loginBtn.style.display = "block";
-                        logoutBtn.style.display = "none";
-                    })
-                    .catch(error => console.error("Logout failed:", error));
-            });
-        });
-    </script>
+    <h3>Points System</h3>
+    <p>Your Points: <span id="points">0</span></p>
+    <button onclick="earnPoints()">Earn 10 Points</button>
+    <button onclick="redeemPoints()">Redeem 10 Points</button>
 </body>
 </html>
