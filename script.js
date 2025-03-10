@@ -1,32 +1,42 @@
-// Import Firestore functions
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { auth, db, signUpUser, logInUser, logOutUser, addPoints, redeemPoints } from "./index.js";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
-// Get Firestore database reference
-const db = getFirestore();
-
-// Reference to "Deals" collection
-const dealsCollection = collection(db, "Deals");
-
-// Fetch deals from Firestore and display them
-async function fetchDeals() {
-    const querySnapshot = await getDocs(dealsCollection);
-    let dealsHTML = "";
-
-    querySnapshot.forEach((doc) => {
-        const deal = doc.data();
-        dealsHTML += `
-            <div class="deal">
-                <img src="${deal.Image}" alt="${deal.Title}" width="150">
-                <h3>${deal.Title}</h3>
-                <p>Price: $${deal.Price}</p>
-                <p>⭐ Rating: ${deal.Rating}</p>
-                <a href="${deal.AffiliateLinks}" target="_blank">Shop Now</a>
-            </div>
-        `;
-    });
-
-    document.getElementById("trending-deals").innerHTML = dealsHTML;
+// Sign Up Function (Connected to Frontend)
+async function signUp() {
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+    await signUpUser(email, password);
 }
 
-// Call the function to load deals when the page loads
-fetchDeals();
+// Log In Function (Connected to Frontend)
+async function logIn() {
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+    await logInUser(email, password);
+}
+
+// Log Out Function
+async function logOut() {
+    await logOutUser();
+    document.getElementById("user-info").innerText = "Not logged in";
+}
+
+// Fetch User Info & Points
+async function fetchUserData(user) {
+    if (user) {
+        document.getElementById("user-info").innerText = `Logged in as: ${user.email}`;
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+            document.getElementById("points").innerText = userDoc.data().points || 0;
+        }
+    }
+}
+
+// Earn & Redeem Points
+async function earnPoints() { fetchUserData(auth.currentUser); await addPoints(auth.currentUser.uid, 10); }
+async function redeemPoints() { fetchUserData(auth.currentUser); await redeemPoints(auth.currentUser.uid, 10); }
+
+// Monitor Auth Changes
+onAuthStateChanged(auth, (user) => { user ? fetchUserData(user) : logOut(); });
